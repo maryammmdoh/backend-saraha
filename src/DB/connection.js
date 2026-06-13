@@ -1,5 +1,5 @@
 import {connect} from "mongoose";
-import { DB_ATLAS_URL, DB_URL, NODE_ENV } from '../../Config/config.service.js';
+import { DB_ATLAS_URL, DB_URL, NODE_ENV } from '../../config/config.service.js';
 
 async function connectDB() {
     try {

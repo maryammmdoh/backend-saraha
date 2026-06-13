@@ -1,4 +1,4 @@
-import { ENCRYPTION_KEY } from "../../../Config/config.service.js";
+import { ENCRYPTION_KEY } from "../../../config/config.service.js";
 import  CryptoJS  from 'crypto-js';
 
 export function encryptvalue({value, key = ENCRYPTION_KEY}){

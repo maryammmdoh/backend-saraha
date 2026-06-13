@@ -43,30 +43,30 @@ export async function update({ key, value }) {
   return await client.set(key, value);
 }
 
-export async function remove( keys ) {
+export async function remove( {keys} ) {
   return await client.del(keys);
 }
 
-export async function ttl( key ) {
+export async function ttl( {key} ) {
   return await client.ttl(key);
 }
 
-export async function setExpire( key, seconds ) {
+export async function setExpire( {key, seconds} ) {
   return await client.expire(key, seconds);
 }
 
-export async function removeExpire( key ) {
+export async function removeExpire( {key} ) {
   return await client.persist(key);
 }
 
-export async function get( key ) {
+export async function get( {key} ) {
   return await client.get(key);
 }
 
-export async function mget( keys ) {
+export async function mget( {keys} ) {
   return await client.mget(keys);
 }
 
-export async function exists( key ) {
+export async function exists( {key} ) {
   return await client.exists(key);
 }

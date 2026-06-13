@@ -9,7 +9,7 @@ import {
   SALT_ROUNDS,
   ENCRYPTION_KEY,
   GOOGLE_CLIENT_ID,
-} from "../../../Config/config.service.js";
+} from "../../../config/config.service.js";
 import { compareOperation, hashOperation } from "../../Common/Security/hash.js";
 import CryptoJS from "crypto-js";
 import {
@@ -187,7 +187,7 @@ export async function sendOTPForgetPassword(email) {
   await SendEmailOTP({ email, emailType: EmailEnum.FORGET_PASSWORD , subject: "Reset your password" });
 }
 
-export async function verifyOTPFogetPassword(bodyData) {
+export async function verifyOTPForgetPassword(bodyData) {
   const { email, otp } = bodyData;
   const storedOTP = await redisServices.get({ key: redisServices.getOTPKey({ email, emailType: EmailEnum.FORGET_PASSWORD }) });
   if (!storedOTP) {
@@ -207,7 +207,7 @@ export async function verifyOTPFogetPassword(bodyData) {
 export async function resetPassword(bodyData) {
   const { email, newPassword, otp } = bodyData;
   
-  await verifyOTPFogetPassword({ email, otp });
+  await verifyOTPForgetPassword({ email, otp });
   
   const hashedPassword = await hashOperation({
     plainValue: newPassword,
@@ -258,7 +258,7 @@ export async function login(bodyData) {
   //     subject: existingUser._id.toString(), // This option is used to set the "sub" (subject) claim in the token, which is typically used to identify the user or entity that the token represents. In this case, it is set to the string representation of the user's ID. You can replace this value with any other identifier that you want to associate with the token. The "sub" claim is a standard claim in JWTs and can be used by the server to identify the user when the token is sent back in subsequent requests.
   //     //both options subject and sub can not be used together, they are the same thing, you can use either one of them to set the subject claim in the token. If you use both options, the last one will overwrite the previous one. So in this case, the "sub" claim will be set to "123" and the "subject" claim will be ignored.
   //     expiresIn: "1h", // This option is used to set the expiration time of the token. In this case, it is set to "1h", which means the token will expire in 1 hour. You can adjust this value based on your application's requirements. After the token expires, it will no longer be valid and the user will need to log in again to obtain a new token. Setting an appropriate expiration time is important for security reasons, as it limits the window of opportunity for an attacker to use a stolen token.
-  //     notBefore: "10s", // This option is used to set the "nbf" (not before) claim in the token, which indicates the time before which the token should not be accepted for processing. In this case, it is set to "10s", which means the token will not be valid until 10 seconds after it is issued. This can be useful to prevent tokens from being used immediately after they are issued, addingimport { getOTPReqNoKey } from './../../DB/redis.service';
+  //     notBefore: "10s", // This option is used to set the "nbf" (not before) claim in the token, which indicates the time before which the token should not be accepted for processing. In this case, it is set to "10s", which means the token will not be valid until 10 seconds after it is issued. This can be useful to prevent tokens from being used immediately after they are issued, adding import { getOTPReqNoKey } from './../../DB/redis.service';
 //  an extra layer of security. You can adjust this value based on your application's requirements. If a token is received before the specified "not before" time, it will be rejected by the server.import { async } from './../User/user.services';
 
   //     issuer: "http://localhost:5000", // This option is used to set the "iss" (issuer) claim in the token, which identifies the principal that issued the token. In this case, it is set to "yourappname". You can replace this value with the actual name of your application or any other identifier that you want to associate with the token's issuer. The "iss" claim is a standard claim in JWTs and can be used by the server to verify that the token was issued by a trusted source. When validating the token, the server can check if the "iss" claim matches the expected issuer value to ensure that the token is legitimate.

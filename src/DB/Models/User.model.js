@@ -49,7 +49,14 @@ const userSchema = new mongoose.Schema(
             default: ProviderEnum.System
         },
         profileImage: String,
-        coverImage: String,
+        coverImage: {
+            type: [String],
+            default: [],
+        },
+        profileVisitCount: {
+            type: Number,
+            default: 0,
+        },
         changeCreditTime: Date,
     },
     

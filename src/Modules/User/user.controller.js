@@ -25,22 +25,20 @@ const userRouter = express.Router();
 userRouter.post("/", (req, res) => {
   res.send("user route");
 });
-
-userRouter.get(
-  "/get_user",
+// done
+userRouter.get("/get_user",
   authentication(),
   authorization([RoleEnum.Admin]),
   async (req, res) => {
     try {
       successResponse({ res, statusCode: 200, data: req.user });
     } catch (error) {
-      notFoundException(error.message || "Something went wrong");
+      return notFoundException(error.message || "Something went wrong");
     }
   },
 );
-
-userRouter.post(
-  "/renew_token",
+// done
+userRouter.post("/renew_token",
 
   authentication(TokenType.REFRESH),
   async (req, res) => {
@@ -48,19 +46,18 @@ userRouter.post(
       const tokens = await userservice.renewToken(req.user);
       successResponse({ res, statusCode: 200, data: tokens });
     } catch (error) {
-      notFoundException(error.message || "Something went wrong");
+      return notFoundException(error.message || "Something went wrong");
     }
   },
 );
-
-userRouter.post(
-  "/upload_profile_picture",
+// done
+userRouter.post("/upload_profile_picture",
   authentication(),
   localUpload({
     foldername: "User",
     allowedFormats: allowedFileFormats.img,
     fileSize: 20,
-  }).single("profilePic"),
+  }).single("profilePicture"),
   validation(ProfilePictureUploadValidation),
   async (req, res) => {
     try {
@@ -70,19 +67,18 @@ userRouter.post(
       );
       successResponse({ res, statusCode: 200, data: result });
     } catch (error) {
-      notFoundException(error.message || "Something went wrong");
+      return notFoundException(error.message || "Something went wrong");
     }
   },
 );
-
-userRouter.post(
-  "/upload_cover_picture",
+// done
+userRouter.post( "/upload_cover_picture",
   authentication(),
   localUpload({
     foldername: "User",
     allowedFormats: allowedFileFormats.img,
     fileSize: 20,
-  }).array("coverpic", 2),
+  }).array("coverPictures", 2),
   validation(CoverPictureUploadValidation),
   async (req, res) => {
     try {
@@ -92,13 +88,12 @@ userRouter.post(
       );
       successResponse({ res, statusCode: 200, data: result });
     } catch (error) {
-      notFoundException(error.message || "Something went wrong");
+      return notFoundException(error.message || "Something went wrong");
     }
   },
 );
-
-userRouter.get(
-  "/share-profile/:profileId",
+// done
+userRouter.get("/share-profile/:profileId",
   validation(GetAnotherUserProfileSchema),
   async (req, res) => {
     try {
@@ -107,11 +102,11 @@ userRouter.get(
       );
       successResponse({ res, statusCode: 200, data: result });
     } catch (error) {
-      notFoundException(error.message || "Something went wrong");
+      return notFoundException(error.message || "Something went wrong");
     }
   },
 );
-
+// done
 userRouter.get("/logout", authentication(), async (req, res) => {
   try {
     await userservice.logout(
@@ -121,17 +116,17 @@ userRouter.get("/logout", authentication(), async (req, res) => {
     );
     successResponse({ res, statusCode: 200, data: "Logged out successfully" });
   } catch (error) {
-    notFoundException(error.message || "Something went wrong");
+    return notFoundException(error.message || "Something went wrong");
   }
 });
-
+// done
 userRouter.patch("/update-password", authentication(),
 validation(UpdatePasswordSchema), async (req, res) => {
   try {
   await userservice.updatePassword(req.body, req.user);
     successResponse({ res, statusCode: 200, data: "Password updated successfully" });
   } catch (error) {
-    notFoundException(error.message || "Something went wrong");
+    return notFoundException(error.message || "Something went wrong");
   }
 });
 

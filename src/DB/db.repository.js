@@ -78,3 +78,21 @@ export async function deleteOne({
     const result = await model.deleteOne(filters, Options);
     return result;
 }
+
+export async function findByIdAndUpdate({
+    model,
+    id,
+    updateData,
+    select = "",
+    populate = false,
+    populateFields = "",
+    Options
+}) {
+    let result;
+    if (populate) {
+        result = await model.findByIdAndUpdate(id, updateData, Options).select(select).populate(populateFields);
+    } else {
+        result = await model.findByIdAndUpdate(id, updateData, Options).select(select);
+    }
+    return result;
+}

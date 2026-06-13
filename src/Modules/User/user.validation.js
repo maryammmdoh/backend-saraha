@@ -1,11 +1,12 @@
 import joi from "joi";
 import { commonValidation, idValidation } from "../../Middleware/validation.middleware.js";
+
 export const ProfilePictureUploadValidation = {
     file: joi.object({}).keys({
         fieldname: joi.string().required(),
         originalname: joi.string().required(),
         encoding: joi.string().required(),
-        mimetype: joi.string().valid("image/png", "image/jpg").required(),
+        mimetype: joi.string().valid("image/png", "image/jpg", "image/jpeg").required(),
         size: joi.number().required(),
         finalPath: joi.string().required(),
         destination: joi.string().required(),
@@ -20,7 +21,7 @@ export const CoverPictureUploadValidation = {
             fieldname: joi.string().required(),
             originalname: joi.string().required(),
             encoding: joi.string().required(),
-            mimetype: joi.string().valid("image/png", "image/jpg").required(),
+            mimetype: joi.string().valid("image/png", "image/jpg", "image/jpeg").required(),
             size: joi.number().required(),
             finalPath: joi.string().required(),
             destination: joi.string().required(),

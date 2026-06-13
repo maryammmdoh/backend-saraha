@@ -59,5 +59,11 @@ export const resetPasswordSchema = {
     }).required()
 }
 
+export const signupWithGmailSchema = {
+  body: joi.object({}).keys({
+    idToken: joi.string().required(),
+  }).required(),
+};
+
 
 

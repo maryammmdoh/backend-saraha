@@ -1,7 +1,8 @@
 import { badRequestException } from "../Common/Response/response.js";
 import { GenderEnum } from './../Common/Enums/user.enums.js';
 import joi  from 'joi';
-import { Mongoose } from 'mongoose';
+import  mongoose from 'mongoose';
+import {Types} from 'mongoose';
 
 export function validation(schema) {
   return (req, res, next) => {
@@ -33,11 +34,12 @@ export const commonValidation = {
     "string.empty": "userName cannot be empty",
     "any.required": "userName is required"
   }),
-  email: joi.string().pattern(new RegExp(/^\w{3,25}@(gmail|yahoo|hotmail|icloud)\.(com|net|org){1,4}$/)).trim().messages({
-    "string.pattern.base": "email must be a valid email address it accept only characters and digits and only _ from special characters before @ also with a domain of gmail, yahoo, hotmail, or icloud and a TLD of com, net, or org",
-    "string.empty": "email cannot be empty",
-    "any.required": "email is required"
-  }),
+  // email: joi.string().pattern(new RegExp(/^\w{3,25}@(gmail|yahoo|hotmail|icloud)\.(com|net|org){1,4}$/)).trim().messages({
+  //   "string.pattern.base": "email must be a valid email address it accept only characters and digits and only _ from special characters before @ also with a domain of gmail, yahoo, hotmail, or icloud and a TLD of com, net, or org",
+  //   "string.empty": "email cannot be empty",
+  //   "any.required": "email is required"
+  // }),
+  email: joi.string(),
   password: joi.string().pattern(new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,16}$/)).messages({
     "string.pattern.base": "password must be 8-16 characters long, contain at least one lowercase letter, one uppercase letter, one digit, and one special character",
     "string.empty": "password cannot be empty",
@@ -70,8 +72,8 @@ export const commonValidation = {
 };
 
 export function idValidation(value, helpers) {
-  if (!Mongoose.Types.ObjectId.isValid(value)) {
-    return helpers.message("Invalid profileId format");
+  if(!mongoose.Types.ObjectId.isValid(value)){
+    return helpers.message("Invalid ID format");
   }
   return value;
 }

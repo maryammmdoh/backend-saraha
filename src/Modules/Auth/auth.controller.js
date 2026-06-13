@@ -11,6 +11,7 @@ import {
   sendOTPForgetPasswordSchema,
   resetPasswordSchema,
   verifyOTPForgotPasswordSchema,
+  signupWithGmailSchema,
 } from "./auth.validation.js";
 import { auth } from "google-auth-library";
 
@@ -20,6 +21,7 @@ authRouter.post("/", (req, res) => {
     res.send("auth route");
 });
 
+//done
 authRouter.post("/signup", 
     validation(signupSchema), async (req, res) => {
     // validation must be added after the multer middleware to validate the request body after the file is uploaded and the request body is parsed by multer and assigned to req.body and the file is assigned to req.file and if we add the validation middleware before the multer middleware it will not work because the request body will not be parsed and assigned to req.body and the file will not be assigned to req.file and the validation middleware will not be able to validate the request body and it will throw an error because it will try to access properties of undefined (req.body) in the validation process
@@ -31,10 +33,11 @@ authRouter.post("/signup",
         successResponse({ res, statusCode: 201, data: user });
 
     } catch (error) {
-        notFoundException(error.message || "Something went wrong");
+        // notFoundException(error.message || "Something went wrong");
+        notFoundException("Something went wrong", { error: error.message });
     }
 });
-
+//done
 authRouter.post("/confirm-email", 
     validation(confirmEmailSchema),
     async (req, res) => {
@@ -45,7 +48,7 @@ authRouter.post("/confirm-email",
             notFoundException(error.message || "Something went wrong");
         }
 });
-
+//  done
 authRouter.post("/send-otp-forget-password", 
     validation(sendOTPForgetPasswordSchema), async (req, res) => {
     try {        
@@ -55,7 +58,7 @@ authRouter.post("/send-otp-forget-password",
         notFoundException(error.message || "Something went wrong");
     }
 });
-
+//done
 authRouter.post("/resend-otp-confirm-email",
     validation(resendotpConfirmationEmailSchema),
     async (req, res) => {
@@ -67,7 +70,7 @@ authRouter.post("/resend-otp-confirm-email",
             notFoundException(error.message || "Something went wrong");
         }
 });
-
+//done
 authRouter.post("/resend-otp-reset-password",
     validation(resendotpConfirmationEmailSchema),
     async (req, res) => {
@@ -79,7 +82,7 @@ authRouter.post("/resend-otp-reset-password",
             notFoundException(error.message || "Something went wrong");
         }
 });
-
+//done
 authRouter.post("/reset-password", 
     validation(resetPasswordSchema), async (req, res) => {
     try {
@@ -89,7 +92,7 @@ authRouter.post("/reset-password",
         notFoundException(error.message || "Something went wrong");
     }
 });
-
+//done
 authRouter.post("/verify-otp-forget-password", 
     validation(verifyOTPForgotPasswordSchema), async (req, res) => {
     try {
@@ -100,7 +103,7 @@ authRouter.post("/verify-otp-forget-password",
     }
 });
 
-authRouter.post("/signup/gmail", async (req, res) => {
+authRouter.post("/signup/gmail", validation(signupWithGmailSchema), async (req, res) => {
     try {
         const { status, result } = await authservice.signupWithGmail(req.vbody.idToken);
         successResponse({ res, statusCode: status, data: result });
@@ -108,7 +111,7 @@ authRouter.post("/signup/gmail", async (req, res) => {
         notFoundException(error.message || "Something went wrong");
     }
 });
-
+//done
 authRouter.post("/login", validation(loginSchema), async (req, res) => {
     try {
         const user = await authservice.login(req.vbody);

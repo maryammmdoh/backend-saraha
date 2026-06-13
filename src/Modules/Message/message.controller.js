@@ -13,9 +13,8 @@ import { deleteMessageSchema, getMessageByIdSchema, sendMessageSchema } from "./
 import { validation } from "../../Middleware/validation.middleware.js";
 const messageRouter = express.Router({caseSensitive: true , strict: true});
 
-//Send a message
-messageRouter.post(
-  "/:receiverId",
+//Send a message - done
+messageRouter.post("/:receiverId",
   (req, res, next) => {
     const { authorization } = req.headers;
     if (authorization) {
@@ -32,7 +31,7 @@ messageRouter.post(
       ...allowedFileFormats.video,
     ],
     fileSize: 50,
-  }).array("msgAttachments", 5),
+  }).array("msgAttachments", 3),
 
   validation(sendMessageSchema),
 
@@ -44,44 +43,45 @@ messageRouter.post(
     const { content } = req.body;
     const { receiverId } = req.params;
     const filesData = req.files;
-    const senderId = req.userId?._id;
+    // const senderId = req.userId?._id;
+    const senderId = req.user?._id;
 
     const result = await sendMessage(receiverId, content, filesData, senderId);
-    return successResponse(res, result.message, result.data);
+    return successResponse({ res, statusCode: 200, data: result });
   },
 );
 
-//get msg by id
+//get msg by id - done
 
-messageRouter.get(
-  "/get-Msg-By-Id/:messageId",
+messageRouter.get("/get-Msg-By-Id/:messageId",
   authentication(),
   validation(getMessageByIdSchema),
   async (req, res) => {
     const { messageId } = req.params;
-    const userId = req.userId._id;
+    const userId = req.user?._id;
     const result = await getMessageById(messageId, userId);
-    return successResponse(res, { data: result });
+    return successResponse({ res, statusCode: 200, data: result });
   },
 );
 
-//get all msgs for a user
+//get all msgs for a user - done
 messageRouter.get("/get-All-Msgs", authentication(), async (req, res) => {
-  const userId = req.userId._id;
+  // const userId = req.userId._id;
+  const userId = req.user?._id;
   const result = await getAllMsgs(userId);
-  return successResponse(res, { data: result });
+  return successResponse({ res, statusCode: 200, data: result });
 });
 
-//delete a message
-messageRouter.delete(
-  "/delete-Msg/:messageId",
+//delete a message - done
+messageRouter.delete("/delete-Msg/:messageId",
   authentication(),
     validation(deleteMessageSchema),
     async (req, res) => {
     const { messageId } = req.params;
-    const userId = req.userId._id;
+    // const userId = req.userId._id;
+    const userId = req.user?._id;
     const result = await deleteMessage(messageId, userId);
-    return successResponse(res, { data: result });
+    return successResponse({ res, statusCode: 200, data: result });
   },
 );
 

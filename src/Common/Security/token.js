@@ -1,4 +1,4 @@
-import { SIGNATURE_KEY_ADMIN, SIGNATURE_KEY_ADMIN_REFRESH, SIGNATURE_KEY_USER, SIGNATURE_KEY_USER_REFRESH } from "../../../Config/config.service.js";
+import { SIGNATURE_KEY_ADMIN, SIGNATURE_KEY_ADMIN_REFRESH, SIGNATURE_KEY_USER, SIGNATURE_KEY_USER_REFRESH } from "../../../config/config.service.js";
 import  jwt  from 'jsonwebtoken';
 import { RoleEnum } from "../Enums/user.enums.js";
 import { TokenType } from "../Enums/token.enums.js";

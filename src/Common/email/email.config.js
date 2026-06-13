@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { Mail_PASS, Mail_USER } from "../../../Config/config.service.js";
+import { Mail_PASS, Mail_USER } from "../../../config/config.service.js";
 
 const transporter = nodemailer.createTransport({
   service: "gmail", // Shortcut for Gmail's SMTP settings - see Well-Known Services

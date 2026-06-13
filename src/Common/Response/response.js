@@ -1,7 +1,7 @@
 // To Get a consistent response format across the application, we can create a Response function that encapsulates the structure of our API responses. This class can include properties like status, message, and data, and can be used to standardize the way we send responses from our controllers.
 
 
-import { NODE_ENV } from "../../../Config/config.service.js";
+import { NODE_ENV } from "../../../config/config.service.js";
 
 export function successResponse({res, statusCode = 200, data}) {
     return res.status(statusCode).json({ msg: "success", data });

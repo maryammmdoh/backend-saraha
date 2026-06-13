@@ -7,6 +7,9 @@ import * as DBRepo from "../../DB/db.repository.js";
 import { decryptValue } from "../../Common/Security/encrpt.js";
 import * as redisServices from "../../DB/redis.service.js";
 import { compareOperation, hashOperation } from "../../Common/Security/hash.js";
+import UserModel from "../../DB/Models/User.model.js";
+import { SALT_ROUNDS } from "../../../config/config.service.js";
+import { badRequestException } from "../../Common/Response/response.js";
 
 export async function renewToken(UserData) {
   const { accessSignatureKey } = getSignatureKeyByRole(UserData.user.role);
@@ -27,7 +30,7 @@ export async function uploadProfilePicture(userId, file) {
   await DBRepo.updateOne({
     model: UserModel,
     filters: { _id: userId },
-    updateData: { profileImage: file.finalPath },
+    updateData: { profilePicture: file.finalPath },
   });
   return {
     message: "Profile picture uploaded successfully",
@@ -45,24 +48,49 @@ export async function uploadCoverPicture(userId, files) {
     return file.finalPath;
   });
 
+  const user = await DBRepo.findByid({
+    model: UserModel,
+    id: userId,
+    select: "coverImage",
+  });
+
+  const existingCoverImages = user.coverImage || [];
+  const totalCoverImages = existingCoverImages.length + filePaths.length;
+
+  if (totalCoverImages !== 2) {
+    throw new Error("Total number of cover images must be exactly 2");
+  }
+
+  const updatedCoverImages = [...existingCoverImages, ...filePaths];
+
+
   await DBRepo.updateOne({
     model: UserModel,
     filters: { _id: userId },
-    updateData: { coverImage: filePaths },
+    updateData: { coverImage: updatedCoverImages },
   });
   return {
     message: "Cover picture uploaded successfully",
-    filePaths: filePaths,
+    filePaths: updatedCoverImages,
   };
 }
 
 export async function getAnotherUserProfile(profileId) {
-  const user = await DBRepo.findByid({
+  // const user = await DBRepo.findByid({
+  //   model: UserModel,
+  //   $inc: { profileVisitCount: 1 }, // Increment the profileVisitCount by 1 each time the profile is visited
+  //   id: profileId,
+  //   select:
+  //     "-password -role -provider -confirmEmail -createdAt -updatedAt -__v",
+  // });
+
+  const user = await DBRepo.findByIdAndUpdate({
     model: UserModel,
     id: profileId,
-    select:
-      "-password -role -provider -confirmEmail -createdAt -updatedAt -__v",
+    updateData: { $inc: { profileVisitCount: 1 } }, // Increment the profileVisitCount by 1 each time the profile is visited
+    Options: { new: true, select: "-password -role -provider -confirmEmail -createdAt -updatedAt -__v" },
   });
+
   if (user.phone) {
     const decryptedPhone = decryptValue({ encryptedValue: user.phone });
     user.phone = decryptedPhone;
@@ -70,6 +98,7 @@ export async function getAnotherUserProfile(profileId) {
   if (!user) {
     throw new Error("User not found");
   }
+  
   return user;
 }
 

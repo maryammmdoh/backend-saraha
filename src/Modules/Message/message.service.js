@@ -1,5 +1,6 @@
 import * as DBRepo from "../../DB/db.repository.js";
 import UserModel from "./../../DB/Models/User.model.js";
+import MessageModel from "./../../DB/Models/Message.model.js";
 import {
   badRequestException,
   notFoundException,
@@ -13,12 +14,13 @@ export async function sendMessage(receiverId, content, filesData, senderId) {
       id: receiverId,
     });
     if (!receiver) {
-      return badRequestException("Receiver not found");
+      // return badRequestException("Receiver not found");
+      throw new Error("Receiver not found");
     }
 
-    console.log({ filesData });
+    // console.log({ filesData });
 
-    await DBRepo.create({
+     const message = await DBRepo.create({
       model: MessageModel,
       inserteddata: {
         content,
@@ -27,7 +29,11 @@ export async function sendMessage(receiverId, content, filesData, senderId) {
         receiverId,
       },
     });
-  } catch (error) {}
+    // return successResponse({ res, statusCode: 200, data: result });
+    return {message: "Message sent successfully",data: message};
+  } catch (error) {
+    return badRequestException(error.message);
+  }
 }
 
 export async function getMessageById(messageId, userId) {
@@ -40,9 +46,9 @@ export async function getMessageById(messageId, userId) {
     if (!message) {
       return notFoundException("Message not found");
     }
-    return successResponse(null, "Message retrieved successfully", message);
+    return {message: "Message retrieved successfully", data: message};
   } catch (error) {
-    return badRequestException(error.message);
+    throw new Error("Message not found");
   }
 }
 
@@ -58,9 +64,9 @@ export async function getAllMsgs(userId) {
     if (!messages || messages.length === 0) {
       return notFoundException("No messages found");
     }
-    return successResponse(null, "Messages retrieved successfully", messages);
+    return {message: "Messages retrieved successfully", data: messages};
   } catch (error) {
-    return badRequestException(error.message);
+    throw new Error("No messages found");
   }
 }
 
@@ -73,7 +79,7 @@ export async function deleteMessage(messageId, userId) {
     if (!message.deletedCount) {
       return notFoundException("Message not found or you are not the receiver");
     }
-    return successResponse(null, "Message deleted successfully");
+    return {message: "Message deleted successfully", data: null};
   } catch (error) {
     return badRequestException(error.message);
   }

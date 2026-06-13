@@ -4,7 +4,7 @@ import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
 export const allowedFileFormats = {
-  img: ["image/png", "image/jpg"],
+  img: ["image/png", "image/jpg", "image/jpeg"],
   video: ["video/mp4", "video/mkv"],
   pdf: ["application/pdf"],
 };

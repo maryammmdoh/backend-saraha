@@ -1,1 +1,7 @@
 node_modules/
+.env.dev
+.env.prod
+uploads/
+tmp/
+deploy-notes.js
+Regular_Expression_Notes.js
